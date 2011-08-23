@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="source" root="../../../source">
+      <df name="App">
+        <df name="TAppCommon">
+          <in>program_options_lite.cpp</in>
+          <in>program_options_lite.h</in>
+        </df>
+        <df name="TAppDecoder">
+          <in>TAppDecCfg.cpp</in>
+          <in>TAppDecCfg.h</in>
+          <in>TAppDecTop.cpp</in>
+          <in>TAppDecTop.h</in>
+          <in>decmain.cpp</in>
+        </df>
+        <df name="TAppEncoder">
+          <in>TAppEncCfg.cpp</in>
+          <in>TAppEncCfg.h</in>
+          <in>TAppEncTop.cpp</in>
+          <in>TAppEncTop.h</in>
+          <in>encmain.cpp</in>
+        </df>
+        <df name="utils">
+          <in>annexBbytecount.cpp</in>
+          <in>convert_NtoMbit_YCbCr.cpp</in>
+        </df>
+      </df>
+      <df name="Lib">
+        <df name="libmd5">
+          <in>MD5.h</in>
+          <in>libmd5.c</in>
+          <in>libmd5.h</in>
+        </df>
+        <df name="TLibCommon">
+          <in>AccessUnit.h</in>
+          <in>CommonDef.h</in>
+          <in>ContextModel.cpp</in>
+          <in>ContextModel.h</in>
+          <in>ContextModel3DBuffer.cpp</in>
+          <in>ContextModel3DBuffer.h</in>
+          <in>ContextTables.h</in>
+          <in>NAL.h</in>
+          <in>SEI.h</in>
+          <in>TComAdaptiveLoopFilter.cpp</in>
+          <in>TComAdaptiveLoopFilter.h</in>
+          <in>TComBitCounter.h</in>
+          <in>TComBitStream.cpp</in>
+          <in>TComBitStream.h</in>
+          <in>TComCABACTables.cpp</in>
+          <in>TComCABACTables.h</in>
+          <in>TComDataCU.cpp</in>
+          <in>TComDataCU.h</in>
+          <in>TComList.h</in>
+          <in>TComLoopFilter.cpp</in>
+          <in>TComLoopFilter.h</in>
+          <in>TComMotionInfo.cpp</in>
+          <in>TComMotionInfo.h</in>
+          <in>TComMv.h</in>
+          <in>TComPattern.cpp</in>
+          <in>TComPattern.h</in>
+          <in>TComPic.cpp</in>
+          <in>TComPic.h</in>
+          <in>TComPicSym.cpp</in>
+          <in>TComPicSym.h</in>
+          <in>TComPicYuv.cpp</in>
+          <in>TComPicYuv.h</in>
+          <in>TComPicYuvMD5.cpp</in>
+          <in>TComPredFilter.cpp</in>
+          <in>TComPredFilter.h</in>
+          <in>TComPrediction.cpp</in>
+          <in>TComPrediction.h</in>
+          <in>TComRdCost.cpp</in>
+          <in>TComRdCost.h</in>
+          <in>TComRom.cpp</in>
+          <in>TComRom.h</in>
+          <in>TComSlice.cpp</in>
+          <in>TComSlice.h</in>
+          <in>TComTrQuant.cpp</in>
+          <in>TComTrQuant.h</in>
+          <in>TComYuv.cpp</in>
+          <in>TComYuv.h</in>
+          <in>TypeDef.h</in>
+        </df>
+        <df name="TLibDecoder">
+          <in>AnnexBread.cpp</in>
+          <in>AnnexBread.h</in>
+          <in>NALread.cpp</in>
+          <in>NALread.h</in>
+          <in>SEIread.cpp</in>
+          <in>SEIread.h</in>
+          <in>TDecBinCoder.h</in>
+          <in>TDecBinCoderCABAC.cpp</in>
+          <in>TDecBinCoderCABAC.h</in>
+          <in>TDecCAVLC.cpp</in>
+          <in>TDecCAVLC.h</in>
+          <in>TDecCu.cpp</in>
+          <in>TDecCu.h</in>
+          <in>TDecEntropy.cpp</in>
+          <in>TDecEntropy.h</in>
+          <in>TDecGop.cpp</in>
+          <in>TDecGop.h</in>
+          <in>TDecSbac.cpp</in>
+          <in>TDecSbac.h</in>
+          <in>TDecSlice.cpp</in>
+          <in>TDecSlice.h</in>
+          <in>TDecTop.cpp</in>
+          <in>TDecTop.h</in>
+        </df>
+        <df name="TLibEncoder">
+          <in>AnnexBwrite.h</in>
+          <in>NALwrite.cpp</in>
+          <in>NALwrite.h</in>
+          <in>SEIwrite.cpp</in>
+          <in>SEIwrite.h</in>
+          <in>TEncAdaptiveLoopFilter.cpp</in>
+          <in>TEncAdaptiveLoopFilter.h</in>
+          <in>TEncAnalyze.cpp</in>
+          <in>TEncAnalyze.h</in>
+          <in>TEncBinCoder.h</in>
+          <in>TEncBinCoderCABAC.cpp</in>
+          <in>TEncBinCoderCABAC.h</in>
+          <in>TEncCavlc.cpp</in>
+          <in>TEncCavlc.h</in>
+          <in>TEncCfg.h</in>
+          <in>TEncCu.cpp</in>
+          <in>TEncCu.h</in>
+          <in>TEncEntropy.cpp</in>
+          <in>TEncEntropy.h</in>
+          <in>TEncGOP.cpp</in>
+          <in>TEncGOP.h</in>
+          <in>TEncSbac.cpp</in>
+          <in>TEncSbac.h</in>
+          <in>TEncSearch.cpp</in>
+          <in>TEncSearch.h</in>
+          <in>TEncSlice.cpp</in>
+          <in>TEncSlice.h</in>
+          <in>TEncTop.cpp</in>
+          <in>TEncTop.h</in>
+        </df>
+        <df name="TLibVideoIO">
+          <in>TVideoIOYuv.cpp</in>
+          <in>TVideoIOYuv.h</in>
+        </df>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>HM-3.4-Makefile.mk</itemPath>
+      <itemPath>../makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>../../../source</Elem>
+  </sourceRootList>
+  <projectmakefile>HM-3.4-Makefile.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>..</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f makefile</buildCommand>
+          <cleanCommand>${MAKE} -f makefile clean</cleanCommand>
+          <executablePath>../../../bin/TAppEncoderStatic</executablePath>
+          <cTool>
+            <incDir>
+              <pElem>../../../source</pElem>
+            </incDir>
+          </cTool>
+          <ccTool>
+            <incDir>
+              <pElem>../../../source</pElem>
+            </incDir>
+          </ccTool>
+        </makeTool>
+      </makefileType>
+    </conf>
+  </confs>
+</configurationDescriptor>
