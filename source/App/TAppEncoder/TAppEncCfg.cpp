@@ -41,6 +41,7 @@
 #include <string>
 #include "TAppEncCfg.h"
 #include "../../App/TAppCommon/program_options_lite.h"
+#include "TAppDbg.h"
 
 #ifdef WIN32
 #define strdup _strdup
@@ -98,6 +99,7 @@ Void TAppEncCfg::destroy()
 Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
 {
   bool do_help = false;
+  bool do_dbg = false;
   
   string cfg_InputFile;
   string cfg_BitstreamFile;
@@ -105,6 +107,7 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
   string cfg_dQPFile;
   po::Options opts;
   opts.addOptions()
+  ("dbg", do_dbg, false, "performing dbg")
   ("help", do_help, false, "this help text")
   ("c", po::parseConfigFile, "configuration file name")
   
@@ -255,7 +258,11 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
     xPrintUsage();
     return false;
   }
-  
+
+  if (do_dbg)
+  {
+	  TAppDbg::enableDbg = true;
+  }
   /*
    * Set any derived parameters
    */

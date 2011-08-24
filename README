@@ -1,1 +1,4 @@
 HM PU's Decision Decision Block
+
+1. Debug Static Class Usage:
+	./TAppEncoderStatic --dbg -c <config_file>
