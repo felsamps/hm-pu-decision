@@ -105,6 +105,8 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
   string cfg_BitstreamFile;
   string cfg_ReconFile;
   string cfg_dQPFile;
+  string cfg_DebugFile;
+  
   po::Options opts;
   opts.addOptions()
   ("dbg", do_dbg, false, "performing dbg")
@@ -112,10 +114,10 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
   ("c", po::parseConfigFile, "configuration file name")
   
   /* File, I/O and source parameters */
-  ("InputFile,i",     cfg_InputFile,     string(""), "original YUV input file name")
-  ("BitstreamFile,b", cfg_BitstreamFile, string(""), "bitstream output file name")
-  ("ReconFile,o",     cfg_ReconFile,     string(""), "reconstructed YUV output file name")
-  
+  ("InputFile,i",        cfg_InputFile,     string(""), "original YUV input file name")
+  ("BitstreamFile,b",    cfg_BitstreamFile, string(""), "bitstream output file name")
+  ("ReconFile,o",        cfg_ReconFile,     string(""), "reconstructed YUV output file name")
+  ("DebugFile,dbg_file", cfg_DebugFile,     string(""), "debug file path")
   ("SourceWidth,-wdt",      m_iSourceWidth,  0, "Source picture width")
   ("SourceHeight,-hgt",     m_iSourceHeight, 0, "Source picture height")
   ("InputBitDepth",         m_uiInputBitDepth, 8u, "bit-depth of input file")
@@ -271,7 +273,8 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
   m_pchBitstreamFile = cfg_BitstreamFile.empty() ? NULL : strdup(cfg_BitstreamFile.c_str());
   m_pchReconFile = cfg_ReconFile.empty() ? NULL : strdup(cfg_ReconFile.c_str());
   m_pchdQPFile = cfg_dQPFile.empty() ? NULL : strdup(cfg_dQPFile.c_str());
-  
+  m_pchDebugFile = cfg_DebugFile.empty() ? NULL : strdup(cfg_DebugFile.c_str());
+
   if (m_iRateGOPSize == -1)
   {
     /* if rateGOPSize has not been specified, the default value is GOPSize */
@@ -497,6 +500,7 @@ Void TAppEncCfg::xPrintParameter()
   printf("Input          File          : %s\n", m_pchInputFile          );
   printf("Bitstream      File          : %s\n", m_pchBitstreamFile      );
   printf("Reconstruction File          : %s\n", m_pchReconFile          );
+  printf("Debug File                   : %s\n", m_pchDebugFile          );
   printf("Real     Format              : %dx%d %dHz\n", m_iSourceWidth - m_aiPad[0], m_iSourceHeight-m_aiPad[1], m_iFrameRate );
   printf("Internal Format              : %dx%d %dHz\n", m_iSourceWidth, m_iSourceHeight, m_iFrameRate );
   printf("Frame index                  : %u - %d (%d frames)\n", m_FrameSkip, m_FrameSkip+m_iFrameToBeEncoded-1, m_iFrameToBeEncoded );

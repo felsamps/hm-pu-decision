@@ -15,7 +15,8 @@ TAppDbg::TAppDbg() {
 
 void TAppDbg::openDbgFile(std::string fileName) {
 	if( enableDbg ) {
-		dbgFile = fopen(fileName.c_str(), "w");
+		if((dbgFile = fopen(fileName.c_str(), "w")) == NULL)
+                    printf("Error -> Dbg File could not be created\n");
 	}
 }
 

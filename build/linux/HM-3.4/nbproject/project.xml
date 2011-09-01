@@ -10,6 +10,12 @@
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
+            <sourceRootList>
+                <sourceRootElem>../../../source</sourceRootElem>
+            </sourceRootList>
+            <confList>
+                <confElem>Default</confElem>
+            </confList>
         </data>
     </configuration>
 </project>
