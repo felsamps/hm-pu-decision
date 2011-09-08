@@ -40,7 +40,7 @@
 #include <memory.h>
 #include <assert.h>
 #include <math.h>
-
+#include "/Users/mateusgrellert/hm-pu-decision/source/App/TAppEncoder/TAppDbg.h"
 #include "CommonDef.h"
 #include "TComYuv.h"
 
@@ -408,16 +408,23 @@ Void TComYuv::subtractLuma( TComYuv* pcYuvSrc0, TComYuv* pcYuvSrc1, UInt uiTrUni
   Int  iSrc0Stride = pcYuvSrc0->getStride();
   Int  iSrc1Stride = pcYuvSrc1->getStride();
   Int  iDstStride  = getStride();
+  
+  TAppDbg::printDbg("TComYuv"," -> Distortion Matrix:\n");
   for ( y = uiPartSize-1; y >= 0; y-- )
   {
     for ( x = uiPartSize-1; x >= 0; x-- )
     {
       pDst[x] = pSrc0[x] - pSrc1[x];
+      TAppDbg::printDbg("", "%d ", pDst[x]);
     }
+    TAppDbg::printDbg("", "\n");
+
     pSrc0 += iSrc0Stride;
     pSrc1 += iSrc1Stride;
     pDst  += iDstStride;
   }
+  TAppDbg::printDbg("", "\n");
+
 }
 
 Void TComYuv::subtractChroma( TComYuv* pcYuvSrc0, TComYuv* pcYuvSrc1, UInt uiTrUnitIdx, UInt uiPartSize )
