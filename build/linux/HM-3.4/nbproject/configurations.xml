@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="62">
+<configurationDescriptor version="69">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <df name="source" root="../../../source">
       <df name="App">
@@ -15,6 +15,8 @@
           <in>decmain.cpp</in>
         </df>
         <df name="TAppEncoder">
+          <in>TAppDbg.cpp</in>
+          <in>TAppDbg.h</in>
           <in>TAppEncCfg.cpp</in>
           <in>TAppEncCfg.h</in>
           <in>TAppEncTop.cpp</in>
@@ -148,7 +150,9 @@
                    displayName="Important Files"
                    projectFiles="false">
       <itemPath>HM-3.4-Makefile.mk</itemPath>
+      <itemPath>../../../cfg/gaci.cfg</itemPath>
       <itemPath>../makefile</itemPath>
+      <itemPath>../../../report.dbg</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -160,7 +164,7 @@
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
+        <platform>4</platform>
       </toolsSet>
       <makefileType>
         <makeTool>

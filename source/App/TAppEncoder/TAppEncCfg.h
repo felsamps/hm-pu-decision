@@ -52,6 +52,7 @@ protected:
   char*     m_pchInputFile;                                   ///< source file name
   char*     m_pchBitstreamFile;                               ///< output bitstream file
   char*     m_pchReconFile;                                   ///< output reconstruction file
+  char*     m_pchDebugFile;                                   ///< output reconstruction file
   
   // source specification
   Int       m_iFrameRate;                                     ///< source frame-rates (Hz)
