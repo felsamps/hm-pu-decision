@@ -37,7 +37,7 @@
 
 #include "TEncTop.h"
 #include "TEncSlice.h"
-#include "../../App/TAppEncoder/TAppDbg.h"
+#include "../../Lib/TLibCommon/TComDbg.h"
 #include <math.h>
 
 // ====================================================================================================================
@@ -516,10 +516,10 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			m_pcCuEncoder->encodeCU(pcCU);
 
 			/* Printing some CU Parameters */
-			TAppDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
+			TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
 			for(UInt i=0; i < pcCU->getTotalNumPart(); i++) {
                             if(pcCU->getPredictionMode(i) != MODE_INTRA){
-				TAppDbg::printDbg("", "%d %d %d %d", pcCU->getPredictionMode(i), pcCU->getPartitionSize(i), pcCU->getWidth(i), pcCU->getHeight(i));
+				TComDbg::printDbg("", "%d %d %d %d", pcCU->getPredictionMode(i), pcCU->getPartitionSize(i), pcCU->getWidth(i), pcCU->getHeight(i));
                                 switch(pcCU->getPartitionSize(i)){
                                     case SIZE_2Nx2N : i += pcCU->getWidth(i)*pcCU->getHeight(i)/16; break;
                                     case SIZE_2NxN  : i += pcCU->getWidth(i)*pcCU->getHeight(i)/32; break;

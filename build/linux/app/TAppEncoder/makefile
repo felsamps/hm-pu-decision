@@ -29,7 +29,6 @@ OBJS          		= 	\
 					$(OBJ_DIR)/encmain.o \
 					$(OBJ_DIR)/TAppEncCfg.o \
 					$(OBJ_DIR)/TAppEncTop.o \
-					$(OBJ_DIR)/TAppDbg.o
 
 # set libs to link with
 LIBS				= -ldl
