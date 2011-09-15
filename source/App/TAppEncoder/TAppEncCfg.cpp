@@ -41,6 +41,7 @@
 #include <string>
 #include "TAppEncCfg.h"
 #include "../../App/TAppCommon/program_options_lite.h"
+#include "../../Lib/TLibCommon/TComDbg.h"
 #include "TAppDbg.h"
 
 #ifdef WIN32
@@ -264,6 +265,7 @@ Bool TAppEncCfg::parseCfg( Int argc, Char* argv[] )
   if (do_dbg)
   {
 	  TAppDbg::enableDbg = true;
+	  TComDbg::enableDbg = true;
   }
   /*
    * Set any derived parameters

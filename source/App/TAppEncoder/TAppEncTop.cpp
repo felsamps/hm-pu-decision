@@ -44,6 +44,7 @@
 
 #include "TAppEncTop.h"
 #include "../../Lib/TLibEncoder/AnnexBwrite.h"
+#include "../../Lib/TLibCommon/TComDbg.h"
 #include "TAppDbg.h"
 
 using namespace std;
@@ -217,6 +218,7 @@ Void TAppEncTop::encode() {
 
 	/* Init Debug Configurations */
 	TAppDbg::openDbgFile(m_pchDebugFile);
+	TComDbg::setDbgFile(TAppDbg::getDbgFile());
 	TAppDbg::printDbg("TAppEncTop", "## DEBUG FILE FOR THE PU HEURISTIC DECISION FOR THE HEVC ##");
 	
 	fstream bitstreamFile(m_pchBitstreamFile, fstream::binary | fstream::out);

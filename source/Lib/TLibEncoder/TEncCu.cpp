@@ -503,7 +503,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
         // 2Nx2N, NxN
         if ( !bEarlySkip )
         {
-          xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_2Nx2N );  rpcTempCU->initEstData( uiDepth, iQP );
+ //         xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_2Nx2N );  rpcTempCU->initEstData( uiDepth, iQP );
         }
       }
 
@@ -547,13 +547,13 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
         }
 
         { // 2NxN, Nx2N
-          xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
+//          xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
 #if SUB_LCU_DQP
           rpcTempCU->initEstData( uiDepth, iQP );
 #else
           rpcTempCU->initEstData();
 #endif
-          xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
+//          xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
 #if SUB_LCU_DQP
           rpcTempCU->initEstData( uiDepth, iQP );
 #else

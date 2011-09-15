@@ -1,23 +1,23 @@
 /* 
- * File:   TAppDbg.h
- * Author: felsamps
+ * File:   TComDbg.h
+ * Author: grellert
  *
  * Created on August 24, 2011, 8:18 AM
  */
 
-#ifndef _TAPPDBG_H
-#define	_TAPPDBG_H
+#ifndef _TCOMDBG_H
+#define	_TCOMDBG_H
 
 #include <cstdio>
 #include <cstdarg>
 #include <string>
 
-class TAppDbg {
+class TComDbg {
 private:
 
 
 public:
-    TAppDbg();
+    TComDbg();
 
     /* Static Attributes */
     static FILE* dbgFile;
@@ -25,14 +25,16 @@ public:
 
     /* Static Methods */
     static void openDbgFile(std::string fileName);
-    static FILE* getDbgFile();
+    static void setDbgFile(FILE *filePointer);
     static void closeDbgFile();
     static void printDbg(std::string className, const char* str, ...);
+    static void print(const char* str, ...);
 
 
 private:
 
 };
 
-#endif	/* _TAPPDBG_H */
+#endif	/* _TCOMDBG_H */
+
 

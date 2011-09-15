@@ -38,6 +38,7 @@
 #include <time.h>
 #include "TAppEncTop.h"
 #include "TAppDbg.h"
+#include "../../Lib/TLibCommon/TComDbg.h"
 
 // ====================================================================================================================
 // Main function
@@ -60,6 +61,7 @@ int main(int argc, char* argv[])
 
   // parse configuration
   TAppDbg::enableDbg = false;
+  TComDbg::enableDbg = false;
   if(!cTAppEncTop.parseCfg( argc, argv ))
   {
     cTAppEncTop.destroy();
