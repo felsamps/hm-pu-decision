@@ -1,8 +1,8 @@
 /* 
  * File:   TComDbg.cpp
- * Author: felsamps
+ * Author: grellert
  * 
- * Created on August 24, 2011, 8:18 AM
+ * Created on September 13, 2011, 8:18 AM
  */
 
 #include "TComDbg.h"
@@ -15,21 +15,22 @@ TComDbg::TComDbg() {
 
 void TComDbg::openDbgFile(std::string fileName) {
 	if( enableDbg ) {
-            if((dbgFile = fopen(fileName.c_str(), "w")) == NULL)
-               printf("Error -> Dbg File could not be created\n");
+		if((dbgFile = fopen(fileName.c_str(), "w")) == NULL)
+                    printf("Error -> Dbg File could not be created\n");
+	}
+}
+
+void TComDbg::setDbgFile(FILE *filePointer) {
+	if( enableDbg ) {
+		dbgFile = filePointer; 
 	}
 }
 
 void TComDbg::closeDbgFile() {
-		if( enableDbg ) {
+	if( enableDbg ) {
 		fclose(dbgFile);
 	}
 }
-
-FILE* TComDbg::getDbgFile() {
-        return dbgFile;
-}
-
 
 void TComDbg::printDbg(std::string className, const char* str, ...) {
 	if( enableDbg ) {
@@ -40,7 +41,7 @@ void TComDbg::printDbg(std::string className, const char* str, ...) {
 		vsprintf(buffer, str, args);
 		fprintf(dbgFile, "%s: %s\n", className.c_str(), buffer);
 		va_end(args);
-	}	
+	}
 }
 
 void TComDbg::print(const char* str, ...) {
@@ -50,8 +51,11 @@ void TComDbg::print(const char* str, ...) {
 
 		va_start(args, str);
 		vsprintf(buffer, str, args);
-		fprintf(dbgFile, "%s\n", buffer);
+		fprintf(dbgFile, "%s", buffer);
 		va_end(args);
 	}
 }
+
+
+
 

@@ -40,9 +40,9 @@
 #include <memory.h>
 #include <assert.h>
 #include <math.h>
-#include "TComDbg.h"
 #include "CommonDef.h"
 #include "TComYuv.h"
+#include "TComDbg.h"
 
 TComYuv::TComYuv()
 {
@@ -409,21 +409,25 @@ Void TComYuv::subtractLuma( TComYuv* pcYuvSrc0, TComYuv* pcYuvSrc1, UInt uiTrUni
   Int  iSrc1Stride = pcYuvSrc1->getStride();
   Int  iDstStride  = getStride();
   
-  TComDbg::printDbg("TComYuv"," -> Distortion Matrix:\n");
+
+  TComDbg::printDbg("\nTComYuv"," -> Distortion Matrix:\n");
+
   for ( y = uiPartSize-1; y >= 0; y-- )
   {
     for ( x = uiPartSize-1; x >= 0; x-- )
     {
       pDst[x] = pSrc0[x] - pSrc1[x];
-      TComDbg::printDbg("", "%d ", pDst[x]);
+
+      TComDbg::print("%d ", pDst[x]);
     }
-    TComDbg::printDbg("", "\n");
+    TComDbg::print("\n");
 
     pSrc0 += iSrc0Stride;
     pSrc1 += iSrc1Stride;
     pDst  += iDstStride;
   }
-  TComDbg::printDbg("", "\n");
+
+  TComDbg::print("\n");
 
 }
 
