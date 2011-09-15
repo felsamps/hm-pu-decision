@@ -38,6 +38,12 @@
 #ifndef _TYPEDEF__
 #define _TYPEDEF__
 
+////////////////////////////
+// PREDICTION UNIT FAST DECISION
+////////////////////////////
+
+#define NXN_ONLY 0
+
 
 ////////////////////////////
 // JCT-VC E start
