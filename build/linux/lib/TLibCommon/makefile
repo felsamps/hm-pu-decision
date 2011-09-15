@@ -53,6 +53,7 @@ OBJS          	= \
 			$(OBJ_DIR)/TComTrQuant.o \
 			$(OBJ_DIR)/TComYuv.o \
 			$(OBJ_DIR)/TComDbg.o \
+			$(OBJ_DIR)/TComTimeCounter.o \
 			$(OBJ_DIR)/libmd5.o \
 
 LIBS				= -lpthread
