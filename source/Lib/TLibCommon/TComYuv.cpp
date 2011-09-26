@@ -420,8 +420,6 @@ Void TComYuv::subtractLuma( TComYuv* pcYuvSrc0, TComYuv* pcYuvSrc1, UInt uiTrUni
     pSrc1 += iSrc1Stride;
     pDst  += iDstStride;
   }
-  TComDbg::print("\n");
-
 }
 
 Void TComYuv::subtractChroma( TComYuv* pcYuvSrc0, TComYuv* pcYuvSrc1, UInt uiTrUnitIdx, UInt uiPartSize )

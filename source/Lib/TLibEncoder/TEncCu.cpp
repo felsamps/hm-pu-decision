@@ -471,7 +471,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
           rpcTempCU->initEstData();
 #endif
 #endif
-        //  xCheckRDCostMerge2Nx2N( rpcBestCU, rpcTempCU );
+          xCheckRDCostMerge2Nx2N( rpcBestCU, rpcTempCU );
 #if SUB_LCU_DQP
           rpcTempCU->initEstData( uiDepth, iQP );
 #else
@@ -620,7 +620,14 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
 #if SUB_LCU_DQP
     }
 #endif
-   //TODO: TEncrpcBestCU->getPic();
+ /*/   ====== MATEUS ====== GAMB TIME! ===========
+    for(UInt i = 0; i < rpcBestCU->getTotalNumPart(); i++){
+        if(rpcBestCU->getPredictionMode(i) == MODE_INTER){
+            rpcBestCU->getPic()
+        }
+    }
+   //TODO: rpcBestCU->getPic();
+ //   ====== MATEUS ====== GAMB ENDS ===========*/
 
     m_pcEntropyCoder->resetBits();
     m_pcEntropyCoder->encodeSplitFlag( rpcBestCU, 0, uiDepth, true );

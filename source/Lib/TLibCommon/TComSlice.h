@@ -177,7 +177,7 @@ public:
   
   Void setUseLDC      ( Bool b ) { m_bUseLDC   = b;         }
   Void setUsePAD      ( Bool b ) { m_bUsePAD   = b;         }
-  Void setUseMRG      ( Bool b ) { m_bUseMRG  = b;          } // SOPH:
+  Void setUseMRG      ( Bool b ) { m_bUseMRG  = false;          } // SOPH:
   
   Void setUseLComb    (Bool b)   { m_bUseLComb = b;         }
   Bool getUseLComb    ()         { return m_bUseLComb;      }
