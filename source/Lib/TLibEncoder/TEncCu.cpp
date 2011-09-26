@@ -471,7 +471,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
           rpcTempCU->initEstData();
 #endif
 #endif
-          xCheckRDCostMerge2Nx2N( rpcBestCU, rpcTempCU );
+        //  xCheckRDCostMerge2Nx2N( rpcBestCU, rpcTempCU );
 #if SUB_LCU_DQP
           rpcTempCU->initEstData( uiDepth, iQP );
 #else
@@ -549,13 +549,13 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
         { // 2NxN, Nx2N
 //          xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
 #if SUB_LCU_DQP
-          rpcTempCU->initEstData( uiDepth, iQP );
+         // rpcTempCU->initEstData( uiDepth, iQP );
 #else
           rpcTempCU->initEstData();
 #endif
 //          xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
 #if SUB_LCU_DQP
-          rpcTempCU->initEstData( uiDepth, iQP );
+         // rpcTempCU->initEstData( uiDepth, iQP );
 #else
           rpcTempCU->initEstData();
 #endif
@@ -620,6 +620,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
 #if SUB_LCU_DQP
     }
 #endif
+   //TODO: TEncrpcBestCU->getPic();
 
     m_pcEntropyCoder->resetBits();
     m_pcEntropyCoder->encodeSplitFlag( rpcBestCU, 0, uiDepth, true );
