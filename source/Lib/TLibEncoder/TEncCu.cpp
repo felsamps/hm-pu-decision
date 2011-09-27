@@ -620,10 +620,10 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
 #if SUB_LCU_DQP
     }
 #endif
- /*/   ====== MATEUS ====== GAMB TIME! ===========
+ //   ====== MATEUS ====== GAMB TIME! ===========
     for(UInt i = 0; i < rpcBestCU->getTotalNumPart(); i++){
-        if(rpcBestCU->getPredictionMode(i) == MODE_INTER){
-            rpcBestCU->getPic()
+        if(rpcBestCU->getPredictionMode(i) == MODE_INTER && (i % rpcBestCU->getPartitionSize(i)) == 0){
+            //setar vetor preferencial
         }
     }
    //TODO: rpcBestCU->getPic();

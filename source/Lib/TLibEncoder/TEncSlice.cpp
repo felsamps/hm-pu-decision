@@ -519,17 +519,11 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			TAppDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
                         char predictions[][7] = {"SKIP","INTER","INTRA"};
                         char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
-			for(UInt i=0; i < pcCU->getTotalNumPart(); i++) {
-                            if(pcCU->getPredictionMode(i) != MODE_INTRA){
+			for(UInt i=0; i < pcCU->getTotalNumPart();) {
+                           // if(pcCU->getPredictionMode(i) != MODE_INTRA){
 				TAppDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
-                                switch(pcCU->getPartitionSize(i)){
-                                    case SIZE_2Nx2N : i += pcCU->getWidth(i)*pcCU->getHeight(i)/16; break;
-                                    case SIZE_2NxN  : i += pcCU->getWidth(i)*pcCU->getHeight(i)/32; break;
-                                    case SIZE_Nx2N  : i += pcCU->getWidth(i)*pcCU->getHeight(i)/32; break;
-                                    case SIZE_NxN   : i += pcCU->getWidth(i)*pcCU->getHeight(i)/64; break;
-                                    default         : break;
-                                }
-                            }
+                                i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
+                            //}
 			}
 
 			pppcRDSbacCoder->setBinCountingEnableFlag(false);
