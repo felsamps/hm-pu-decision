@@ -621,11 +621,11 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
     }
 #endif
  //   ====== MATEUS ====== GAMB TIME! ===========
-    for(UInt i = 0; i < rpcBestCU->getTotalNumPart(); i++){
-        if(rpcBestCU->getPredictionMode(i) == MODE_INTER && (i % rpcBestCU->getPartitionSize(i)) == 0){
+    /*if(rpcBestCU->getPredictionMode() == MODE_INTER && (rpcBestCU->getZorderIdxInCU() % rpcBestCU->getPartitionSize()) == 0){
+            void        setPrefMv           (UInt block, TComMv *mv)    { this->prefMv[block] = mv; }
+            TEncFastPUDecision::setPrefMv(rpcBestCU->getZorderIdxInCU(), rpcBestCU->
             //setar vetor preferencial
-        }
-    }
+    }*/
    //TODO: rpcBestCU->getPic();
  //   ====== MATEUS ====== GAMB ENDS ===========*/
 
