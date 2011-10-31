@@ -8,5 +8,11 @@
 #include "TEncFastPUDecision.h"
 
 TEncFastPUDecision::TEncFastPUDecision() {
+    borderA = false;
+    borderB = false;
+    borderC = false;
+    borderD = false;
+    currPartIdx = 0;
+    cu = NULL;
 }
 

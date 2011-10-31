@@ -10,6 +10,7 @@ class TEncFastPUDecision {
     std::vector<UInt> bestDist, prefDist;
     Bool borderA, borderB, borderC, borderD;
     PartSize partSize;
+    UInt currPartIdx;
     static const PredMode predMode = MODE_INTER;
     TComDataCU *cu;
     std::vector<UInt**> distMap; 
@@ -25,8 +26,13 @@ public:
     void        setCU               (TComDataCU *pCu)           { this->cu = pCu; }
     TComDataCU* getCU               ()                          { return this->cu; }
 
+    void        setCurrPartIdx      (UInt idx)                  { this->currPartIdx = idx; }
+    UInt        getCurrPartIdx      ()                          { return this->currPartIdx; }
+
+
     /* Best Matches' Information Setters and Getters */
     void        setBestMv           (UInt block, TComMv* mv)    { this->bestMv[block] = mv; }
+    void        setBestMv           (TComMv* mv)                { this->bestMv[this->currPartIdx] = mv; }
     TComMv*     getBestMv           (UInt block)                { return this->bestMv[block]; }
 
     void        setBestDist         (UInt block, UInt dist)     { this->bestDist[block] = dist; }

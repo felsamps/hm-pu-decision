@@ -38,6 +38,7 @@
 #include "../TLibCommon/TypeDef.h"
 #include "../TLibCommon/TComMotionInfo.h"
 #include "TEncSearch.h"
+#include "TEncFastPUDecision.h"
 #include <math.h>
 
 static TComMv s_acMvRefineH[9] =
@@ -2440,6 +2441,8 @@ Void TEncSearch::predInterSearch( TComDataCU* pcCU, TComYuv* pcOrgYuv, TComYuv*&
   
   PartSize      ePartSize = pcCU->getPartitionSize( 0 );
 
+  TEncFastPUDecision fpu;
+
 #if ZERO_MVD_EST
   Int           aiZeroMvdMvpIdx[2] = {-1, -1};
   Int           aiZeroMvdRefIdx[2] = {0, 0};
@@ -2469,7 +2472,6 @@ Void TEncSearch::predInterSearch( TComDataCU* pcCU, TComYuv* pcOrgYuv, TComYuv*&
     xGetBlkBits( ePartSize, pcCU->getSlice()->isInterP(), iPartIdx, uiLastMode, uiMbBits);
     
     pcCU->getPartIndexAndSize( iPartIdx, uiPartAddr, iRoiWidth, iRoiHeight );
-    
 #if PART_MRG
     Bool bTestNormalMC = true;
     if (pcCU->getSlice()->getSPS()->getUseMRG() && pcCU->getWidth( 0 ) > 8 && iNumPart == 2 && iPartIdx == 0)
@@ -2548,7 +2550,9 @@ Void TEncSearch::predInterSearch( TComDataCU* pcCU, TComYuv* pcOrgYuv, TComYuv*&
             }
             else
             {
-              xMotionEstimation ( pcCU, pcOrgYuv, iPartIdx, eRefPicList, &cMvPred[iRefList][iRefIdxTemp], iRefIdxTemp, cMvTemp[iRefList][iRefIdxTemp], uiBitsTemp, uiCostTemp );
+              fpu.setCU(pcCU);
+              fpu.setCurrPartIdx(iPartIdx);
+              xMotionEstimation ( pcCU, pcOrgYuv, iPartIdx, eRefPicList, &cMvPred[iRefList][iRefIdxTemp], iRefIdxTemp, cMvTemp[iRefList][iRefIdxTemp], uiBitsTemp, uiCostTemp, fpu );
             }
         }
         else
@@ -3259,7 +3263,7 @@ UInt TEncSearch::xGetTemplateCost( TComDataCU* pcCU,
   return uiCost;
 }
 
-Void TEncSearch::xMotionEstimation( TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPartIdx, RefPicList eRefPicList, TComMv* pcMvPred, Int iRefIdxPred, TComMv& rcMv, UInt& ruiBits, UInt& ruiCost, Bool bBi  )
+Void TEncSearch::xMotionEstimation( TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPartIdx, RefPicList eRefPicList, TComMv* pcMvPred, Int iRefIdxPred, TComMv& rcMv, UInt& ruiBits, UInt& ruiCost, Bool bBi, TEncFastPUDecision* fpu  )
 {
   UInt          uiPartAddr;
   Int           iRoiWidth;
@@ -3321,7 +3325,7 @@ Void TEncSearch::xMotionEstimation( TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPa
   else
   {
     rcMv = *pcMvPred;
-    xPatternSearchFast  ( pcCU, pcPatternKey, piRefY, iRefStride, &cMvSrchRngLT, &cMvSrchRngRB, rcMv, ruiCost );
+    xPatternSearchFast  ( pcCU, pcPatternKey, piRefY, iRefStride, &cMvSrchRngLT, &cMvSrchRngRB, rcMv, ruiCost, fpu );
   }
   
   m_pcRdCost->getMotionCost( 1, 0 );
@@ -3363,25 +3367,18 @@ Void TEncSearch::xSetSearchRange ( TComDataCU* pcCU, TComMv& cMvPred, Int iSrchR
   rcMvSrchRngRB >>= iMvShift;
 }
 
-Void TEncSearch::xPUDecisionSearch( TComDataCU* pcCU, TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
+Void TEncSearch::xPUDecisionSearch( TComDataCU* pcCU, TComPattern* pcPatternKey, TEncFastPUDecision* fpu, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
 {
-    FILE *t;
-    if((t = fopen ("/Users/mateusgrellert/cu_indices.txt","a+")) == NULL){
-        printf("Não foi possível abrir cu_indices\n\n");
-        exit(1);
-    }
-    fprintf(t,"%d %d \n", pcCU->getZorderIdxInCU(), iRefStride);
-    fclose(t);
-    if(pcCU->getZorderIdxInCU() == 0){ //if its a CU from the upleft corner, apply xPatterSearch
-        xPatternSearch  ( pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
+    if(fpu->getCurrPartIdx() == 0){ //if its the first PU, apply regular search
+        xPatternSearch  ( pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD, fpu );
     }
     else{ //otherwise try to apply the Fast PU Decision
-        rcMv.set(1,1);
+        rcMv.set(fpu->getBestMv(0)->getHor(),fpu->getBestMv(0)->getVer());
     }
     return;
 }
 
-Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
+Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD, TEncFastPUDecision* fpu )
 {
   Int   iSrchRngHorLeft   = pcMvSrchRngLT->getHor();
   Int   iSrchRngHorRight  = pcMvSrchRngRB->getHor();
@@ -3392,7 +3389,8 @@ Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRe
   UInt  uiSadBest         = MAX_UINT;
   Int   iBestX = 0;
   Int   iBestY = 0;
-  
+
+  TComMv* fpuMv;
   Pel*  piRefSrch;
   
   //-- jclee for using the SAD function pointer
@@ -3431,12 +3429,15 @@ Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRe
   }
   
   rcMv.set( iBestX, iBestY );
-  
+  fpuMv.set( iBestX, iBestY );
+  fpu->setBestMv(fpuMv);
+  fpu->setBestDist(uiSadBest - m_pcRdCost->getCost( iBestX, iBestY )); //TODO: porque essa subtracao?? implementar setBestDist pra um par. soh
+
   ruiSAD = uiSadBest - m_pcRdCost->getCost( iBestX, iBestY );
   return;
 }
 
-Void TEncSearch::xPatternSearchFast( TComDataCU* pcCU, TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
+Void TEncSearch::xPatternSearchFast( TComDataCU* pcCU, TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD, TEncFastPUDecision* fpu )
 {
   pcCU->getMvPredLeft       ( m_acMvPredictors[0] );
   pcCU->getMvPredAbove      ( m_acMvPredictors[1] );
@@ -3448,7 +3449,7 @@ Void TEncSearch::xPatternSearchFast( TComDataCU* pcCU, TComPattern* pcPatternKey
       xTZSearch( pcCU, pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
       break;
     case 2:
-      xPUDecisionSearch( pcCU, pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
+      xPUDecisionSearch( pcCU, pcPatternKey, fpu, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
       break;
     default:
       break;
