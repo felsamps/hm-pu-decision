@@ -37,7 +37,7 @@
 
 #include "TEncTop.h"
 #include "TEncSlice.h"
-#include "../../App/TAppEncoder/TAppDbg.h"
+#include "../../Lib/TLibCommon/TComDbg.h"
 #include <math.h>
 
 // ====================================================================================================================
@@ -516,12 +516,12 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			m_pcCuEncoder->encodeCU(pcCU);
 
 			/* Printing some CU Parameters */
-			TAppDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
+			TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
                         char predictions[][7] = {"SKIP","INTER","INTRA"};
                         char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
 			for(UInt i=0; i < pcCU->getTotalNumPart();) {
                            // if(pcCU->getPredictionMode(i) != MODE_INTRA){
-				TAppDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
+				TComDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
                                 i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
                             //}
 			}
@@ -564,6 +564,16 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			m_pcCuEncoder->compressCU(pcCU);
 			m_pcCavlcCoder ->setAdaptFlag(true);
 			m_pcCuEncoder->encodeCU(pcCU);
+                        
+                        TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
+                        char predictions[][7] = {"SKIP","INTER","INTRA"};
+                        char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
+			for(UInt i=0; i < pcCU->getTotalNumPart();) {
+                           // if(pcCU->getPredictionMode(i) != MODE_INTRA){
+				TComDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
+                                i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
+                            //}
+			}
 
 #if FINE_GRANULARITY_SLICES
 			if (m_pcCfg->getSliceMode() == AD_HOC_SLICES_FIXED_NUMBER_OF_BYTES_IN_SLICE && ((pcSlice->getSliceBits() + m_pcBitCounter->getNumberOfWrittenBits())) > m_pcCfg->getSliceArgument() << 3) {

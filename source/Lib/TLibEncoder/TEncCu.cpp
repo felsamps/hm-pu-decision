@@ -579,7 +579,9 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
           rpcBestCU->getCbf( 0, TEXT_CHROMA_U ) != 0   ||
           rpcBestCU->getCbf( 0, TEXT_CHROMA_V ) != 0     ) // avoid very complex intra if it is unlikely
         {
-          xCheckRDCostIntra( rpcBestCU, rpcTempCU, SIZE_2Nx2N );
+          // MATEUS : Uncomment this line to disable Intra mode in Inter Slices
+           if(rpcBestCU->getSlice()->getSliceType() != P_SLICE)
+            xCheckRDCostIntra( rpcBestCU, rpcTempCU, SIZE_2Nx2N );
 #if SUB_LCU_DQP
           rpcTempCU->initEstData( uiDepth, iQP );
 #else
@@ -589,6 +591,7 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
           {
             if( rpcTempCU->getWidth(0) > ( 1 << rpcTempCU->getSlice()->getSPS()->getQuadtreeTULog2MinSize() ) )
             {
+             if(rpcBestCU->getSlice()->getSliceType() != P_SLICE)
               xCheckRDCostIntra( rpcBestCU, rpcTempCU, SIZE_NxN   );
 #if SUB_LCU_DQP
               rpcTempCU->initEstData( uiDepth, iQP );
@@ -620,15 +623,6 @@ Void TEncCu::xCompressCU( TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt u
 #if SUB_LCU_DQP
     }
 #endif
- //   ====== MATEUS ====== GAMB TIME! ===========
-    /*if(rpcBestCU->getPredictionMode() == MODE_INTER && (rpcBestCU->getZorderIdxInCU() % rpcBestCU->getPartitionSize()) == 0){
-            void        setPrefMv           (UInt block, TComMv *mv)    { this->prefMv[block] = mv; }
-            TEncFastPUDecision::setPrefMv(rpcBestCU->getZorderIdxInCU(), rpcBestCU->
-            //setar vetor preferencial
-    }*/
-   //TODO: rpcBestCU->getPic();
- //   ====== MATEUS ====== GAMB ENDS ===========*/
-
     m_pcEntropyCoder->resetBits();
     m_pcEntropyCoder->encodeSplitFlag( rpcBestCU, 0, uiDepth, true );
     rpcBestCU->getTotalBits() += m_pcEntropyCoder->getNumberOfWrittenBits(); // split bits

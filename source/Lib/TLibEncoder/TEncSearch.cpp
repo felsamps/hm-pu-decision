@@ -3316,7 +3316,7 @@ Void TEncSearch::xMotionEstimation( TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPa
   //  Do integer search
   if ( !m_iFastSearch || bBi )
   {
-    xPatternSearch      ( pcPatternKey, piRefY, iRefStride, &cMvSrchRngLT, &cMvSrchRngRB, rcMv, ruiCost );
+    xPatternSearch ( pcPatternKey, piRefY, iRefStride, &cMvSrchRngLT, &cMvSrchRngRB, rcMv, ruiCost );
   }
   else
   {
@@ -3361,6 +3361,24 @@ Void TEncSearch::xSetSearchRange ( TComDataCU* pcCU, TComMv& cMvPred, Int iSrchR
   
   rcMvSrchRngLT >>= iMvShift;
   rcMvSrchRngRB >>= iMvShift;
+}
+
+Void TEncSearch::xPUDecisionSearch( TComDataCU* pcCU, TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
+{
+    FILE *t;
+    if((t = fopen ("/Users/mateusgrellert/cu_indices.txt","a+")) == NULL){
+        printf("Não foi possível abrir cu_indices\n\n");
+        exit(1);
+    }
+    fprintf(t,"%d %d \n", pcCU->getZorderIdxInCU(), iRefStride);
+    fclose(t);
+    if(pcCU->getZorderIdxInCU() == 0){ //if its a CU from the upleft corner, apply xPatterSearch
+        xPatternSearch  ( pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
+    }
+    else{ //otherwise try to apply the Fast PU Decision
+        rcMv.set(1,1);
+    }
+    return;
 }
 
 Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRefStride, TComMv* pcMvSrchRngLT, TComMv* pcMvSrchRngRB, TComMv& rcMv, UInt& ruiSAD )
@@ -3429,7 +3447,9 @@ Void TEncSearch::xPatternSearchFast( TComDataCU* pcCU, TComPattern* pcPatternKey
     case 1:
       xTZSearch( pcCU, pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
       break;
-      
+    case 2:
+      xPUDecisionSearch( pcCU, pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD );
+      break;
     default:
       break;
   }

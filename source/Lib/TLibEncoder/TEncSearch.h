@@ -367,7 +367,16 @@ protected:
                                     TComMv*       pcMvSrchRngRB,
                                     TComMv&       rcMv,
                                     UInt&         ruiSAD );
-  
+
+  Void xPUDecisionSearch          ( TComDataCU*   pcCU,
+                                    TComPattern*  pcPatternKey,
+                                    Pel*          piRefY,
+                                    Int           iRefStride,
+                                    TComMv*       pcMvSrchRngLT,
+                                    TComMv*       pcMvSrchRngRB,
+                                    TComMv&       rcMv,
+                                    UInt&         ruiSAD );
+
   Void xPatternSearch             ( TComPattern*  pcPatternKey,
                                     Pel*          piRefY,
                                     Int           iRefStride,
