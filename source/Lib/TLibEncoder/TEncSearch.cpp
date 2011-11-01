@@ -3373,8 +3373,10 @@ Void TEncSearch::xPUDecisionSearch( TComDataCU* pcCU, TComPattern* pcPatternKey,
         xPatternSearch  ( pcPatternKey, piRefY, iRefStride, pcMvSrchRngLT, pcMvSrchRngRB, rcMv, ruiSAD, fpu );
     }
     else{ //otherwise try to apply the Fast PU Decision
-        rcMv.set(fpu->getBestMv(0).getHor(),fpu->getBestMv(0).getVer());
+        //rcMv.set(fpu->getBestMv(0).getHor(),fpu->getBestMv(0).getVer());
     }
+    pcCU->setPredModeSubParts( MODE_INTER, 0, pcCU->getDepth(0) );
+    pcCU->setPartSizeSubParts( SIZE_2Nx2N,  0, pcCU->getDepth(0) );
     return;
 }
 
