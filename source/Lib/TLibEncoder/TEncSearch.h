@@ -336,6 +336,7 @@ protected:
   
   Void xMotionEstimation          ( TComDataCU*   pcCU,
                                     TComYuv*      pcYuvOrg,
+                                    TEncFastPUDecision* fpu,
                                     Int           iPartIdx,
                                     RefPicList    eRefPicList,
                                     TComMv*       pcMvPred,
@@ -343,8 +344,7 @@ protected:
                                     TComMv&       rcMv,
                                     UInt&         ruiBits,
                                     UInt&         ruiCost,
-                                    Bool          bBi = false,
-                                    TEncFastPUDecision* fpu = NULL);
+                                    Bool          bBi = false);
   
   Void xTZSearch                  ( TComDataCU*   pcCU,
                                     TComPattern*  pcPatternKey,
@@ -387,7 +387,8 @@ protected:
                                     TComMv*       pcMvSrchRngLT,
                                     TComMv*       pcMvSrchRngRB,
                                     TComMv&       rcMv,
-                                    UInt&         ruiSAD );
+                                    UInt&         ruiSAD,
+                                    TEncFastPUDecision* fpu);
   
   Void xPatternSearchFracDIF      ( TComDataCU*   pcCU,
                                     TComPattern*  pcPatternKey,

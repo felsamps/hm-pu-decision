@@ -6,8 +6,8 @@
 #include "../TLibCommon/TComDataCU.h"
 
 class TEncFastPUDecision {
-    std::vector<TComMv*> bestMv, prefMv;
-    std::vector<UInt> bestDist, prefDist;
+    TComMv bestMv[4], prefMv[4]; //Se vamos usar vector, temos que resolver BAD_ACCESS da indexacao direta
+    UInt bestDist[4], prefDist[4];
     Bool borderA, borderB, borderC, borderD;
     PartSize partSize;
     UInt currPartIdx;
@@ -31,16 +31,17 @@ public:
 
 
     /* Best Matches' Information Setters and Getters */
-    void        setBestMv           (UInt block, TComMv* mv)    { this->bestMv[block] = mv; }
-    void        setBestMv           (TComMv* mv)                { this->bestMv[this->currPartIdx] = mv; }
-    TComMv*     getBestMv           (UInt block)                { return this->bestMv[block]; }
+    void        setBestMv           (UInt block, TComMv mv)    { this->bestMv[block] = mv; }
+    void        setBestMv           (TComMv mv)                 { this->bestMv[this->currPartIdx] = mv; }
+    TComMv      getBestMv           (UInt block)                { return this->bestMv[block]; }
 
     void        setBestDist         (UInt block, UInt dist)     { this->bestDist[block] = dist; }
+    void        setBestDist         (UInt dist)                 { this->bestDist[this->currPartIdx] = dist; }
     UInt        getBestDist         (UInt block)                { return this->bestDist[block]; }
 
     /* Prefferred Matches' Information Setters and Getters */
-    void        setPrefMv           (UInt block, TComMv *mv)    { this->prefMv[block] = mv; }
-    TComMv*     getPrefMv           (UInt block)                { return this->prefMv[block]; }
+    void        setPrefMv           (UInt block, TComMv mv)    { this->prefMv[block] = mv; }
+    TComMv     getPrefMv           (UInt block)                { return this->prefMv[block]; }
 
     void        setPrefDist         (UInt block, UInt dist)     { this->prefDist[block] = dist; }
     UInt        getPrefDist         (UInt block)                { return this->prefDist[block]; }
