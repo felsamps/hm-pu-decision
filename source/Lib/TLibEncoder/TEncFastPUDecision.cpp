@@ -20,8 +20,9 @@ UInt TEncFastPUDecision::currPartIdx;
 const PredMode TEncFastPUDecision::predMode;
 TComDataCU* TEncFastPUDecision::cu;
 std::vector<UInt**> TEncFastPUDecision::distMap;
+Int TEncFastPUDecision::refFrameIdx;
 
-TEncFastPUDecision::TEncFastPUDecision() {
+void TEncFastPUDecision::init() {
     borderA = false;
     borderB = false;
     borderC = false;
@@ -30,3 +31,32 @@ TEncFastPUDecision::TEncFastPUDecision() {
     cu = NULL;
 }
 
+std::string TEncFastPUDecision::report() {
+	std::string returnable("##FastDecision Report##\n");
+	char str[50];
+	
+	
+	for(int i=0; i<4; i++) {
+		sprintf(str, "MV %d - (%d %d) - %d - %d\n ", i, bestMv[i].getHor(), bestMv[i].getVer(), bestDist[i], prefDist[i]);
+		std::string cppStr(str);
+		returnable += cppStr;
+	}
+
+	returnable += "Dec. #1: ";
+	returnable += (borderA) ? "1" : "0";
+	returnable += (borderB) ? "1" : "0";
+	returnable += (borderC) ? "1" : "0";
+	returnable += (borderD) ? "1" : "0";
+	returnable += "\n";
+	
+
+	return returnable;
+}
+
+void TEncFastPUDecision::decideMVSimilarity() {
+	if(bestMv[0] == bestMv[1]) setBorderA(true);
+	if(bestMv[0] == bestMv[2]) setBorderB(true);
+	if(bestMv[1] == bestMv[3]) setBorderC(true);
+	if(bestMv[2] == bestMv[3]) setBorderD(true);
+
+}

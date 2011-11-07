@@ -2,6 +2,7 @@
 #define	_TENCFASTPUDECISION_H
 
 #include <vector>
+#include <string>
 #include "../TLibCommon/TComMv.h"
 #include "../TLibCommon/TComDataCU.h"
 
@@ -13,6 +14,7 @@ public:
     static Bool borderA, borderB, borderC, borderD;
     static PartSize partSize;
     static UInt currPartIdx;
+    static Int refFrameIdx;
     static const PredMode predMode = MODE_INTER;
     static TComDataCU *cu;
     static std::vector<UInt**> distMap;
@@ -21,8 +23,10 @@ public:
     TEncFastPUDecision();
     
     /* Fast PU Decision Methods */
-    static void decide();
+    static void init();
+    static void decideMVSimilarity();
     static void xSetCUParameters();
+    static std::string report();
         
 
     static void        setCU               (TComDataCU *pCu)           { cu = pCu; }
@@ -42,8 +46,8 @@ public:
     static UInt        getBestDist         (UInt block)                { return bestDist[block]; }
 
     /* Prefferred Matches' Information Setters and Getters */
-    static void        setPrefMv           (UInt block, TComMv mv)    { prefMv[block] = mv; }
-    static TComMv     getPrefMv           (UInt block)                { return prefMv[block]; }
+    static void        setPrefMv           (UInt block, TComMv mv)     { prefMv[block] = mv; }
+    static TComMv      getPrefMv           (UInt block)                { return prefMv[block]; }
 
     static void        setPrefDist         (UInt block, UInt dist)     { prefDist[block] = dist; }
     static UInt        getPrefDist         (UInt block)                { return prefDist[block]; }
@@ -59,6 +63,8 @@ public:
     static Bool        isBorderC           ()                          { return borderC; }
     static Bool        isBorderD           ()                          { return borderD; }
 
+    static void        setRefIdx           (Int refIdx)                { refFrameIdx = refIdx; }
+    static Int         getRefIdx           ()                          { return refFrameIdx; }
 };
 
 #endif	/* _TENCFASTPUDECISION_H */
