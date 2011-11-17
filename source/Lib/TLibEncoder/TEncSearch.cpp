@@ -3346,7 +3346,6 @@ Void TEncSearch::xMotionEstimation( TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPa
   TEncFastPUDecision::setBestMv(fpuMv);
   TEncFastPUDecision::setBestDist(ruiCost);
   TComDbg::print("(FS) MV (%d,%d) - SAD %u\n", fpuMv.getHor(), fpuMv.getVer(), ruiCost);
-   
   m_pcRdCost->setCostScale( 0 );
   rcMv <<= 2;
   rcMv += (cMvHalf <<= 1);

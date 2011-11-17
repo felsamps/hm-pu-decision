@@ -556,7 +556,7 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 						rpcBestCU->getCbf(0, TEXT_CHROMA_U) != 0 ||
 						rpcBestCU->getCbf(0, TEXT_CHROMA_V) != 0) // avoid very complex intra if it is unlikely
 				{
-					// MATEUS : Uncomment this line to disable Intra mode in Inter Slices
+					// MATEUS : Comment this line to enable Intra mode in Inter Slices
 					if (rpcBestCU->getSlice()->getSliceType() == I_SLICE) {
 						xCheckRDCostIntra(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
 #if SUB_LCU_DQP

@@ -36,13 +36,15 @@ std::string TEncFastPUDecision::report() {
 	char str[50];
 	
 	
-	for(int i=0; i<4; i++) {
-		sprintf(str, "MV %d - (%d %d) - %d - %d ", i, bestMv[i].getHor(), bestMv[i].getVer(), bestDist[i], prefDist[i]);
-                if(prefDist[i] < bestDist[i])
-                    strcat(str,"**");
-                strcat(str, "\n");
+	for(int i=1; i<4; i++) {
+		sprintf(str, "MV %d - (%d %d) - %d - %d \n", i, bestMv[i-1].getHor(), bestMv[i-1].getVer(), bestDist[i], prefDist[i-1]);
 		std::string cppStr(str);
 		returnable += cppStr;
+                if(i == 3){
+                    sprintf(str, "MV %d - (%d %d) - %d - %d \n", i, bestMv[i].getHor(), bestMv[i].getVer(), bestDist[i], prefDist[i]);
+                    std::string cppStr2(str);
+                    returnable += cppStr2;
+                }
 	}
 
 	returnable += "Dec. #1: ";
