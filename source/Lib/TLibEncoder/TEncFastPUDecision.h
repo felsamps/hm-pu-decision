@@ -35,6 +35,8 @@ public:
     static void        setCurrPartIdx      (UInt idx)                  { currPartIdx = idx; }
     static UInt        getCurrPartIdx      ()                          { return currPartIdx; }
 
+    static void        setCurrPartSize      (PartSize ePartSize)       { partSize = ePartSize; }
+    static UInt        getCurrPartSize      ()                         { return partSize; }
 
     /* Best Matches' Information Setters and Getters */
     static void        setBestMv           (UInt block, TComMv mv)    { bestMv[block] = mv; }

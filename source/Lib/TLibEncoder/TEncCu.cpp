@@ -525,15 +525,15 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 				}
 
 				{ // 2NxN, Nx2N
-					//xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
+					xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
 #if SUB_LCU_DQP
-					//rpcTempCU->initEstData( uiDepth, iQP );
+					rpcTempCU->initEstData( uiDepth, iQP );
 #else
 					rpcTempCU->initEstData();
 #endif
-					//xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
+					xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
 #if SUB_LCU_DQP
-					//rpcTempCU->initEstData( uiDepth, iQP );
+					rpcTempCU->initEstData( uiDepth, iQP );
 #else
 					rpcTempCU->initEstData();
 #endif
@@ -1184,8 +1184,9 @@ Void TEncCu::xCheckRDCostMerge2Nx2N(TComDataCU*& rpcBestCU, TComDataCU*& rpcTemp
 Void TEncCu::xCheckRDCostInter(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, PartSize ePartSize) {
 	UChar uhDepth = rpcTempCU->getDepth(0);
 
+        //FAST DECISION
+        TEncFastPUDecision::setCurrPartSize(ePartSize);
 	rpcTempCU->setDepthSubParts(uhDepth, 0);
-
 	rpcTempCU->setPartSizeSubParts(ePartSize, 0, uhDepth);
 	rpcTempCU->setPredModeSubParts(MODE_INTER, 0, uhDepth);
 

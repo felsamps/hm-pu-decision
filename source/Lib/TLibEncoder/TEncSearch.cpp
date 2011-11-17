@@ -3459,10 +3459,36 @@ Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRe
     }
     piRefY += iRefStride;
   }
-  
-  rcMv.set( iBestX, iBestY );
 
-  ruiSAD = uiSadBest - m_pcRdCost->getCost( iBestX, iBestY );
+  if(TEncFastPUDecision::getCurrPartSize() == SIZE_2NxN && TEncFastPUDecision::isBorderA()){
+      if(TEncFastPUDecision::getCurrPartIdx() == 0){
+        rcMv.set(TEncFastPUDecision::getBestMv(0).getHor(),TEncFastPUDecision::getBestMv(0).getVer());
+        ruiSAD = TEncFastPUDecision::getPrefDist(0);
+      }
+  }
+  else if(TEncFastPUDecision::getCurrPartSize() == SIZE_Nx2N && TEncFastPUDecision::isBorderB()){
+      if(TEncFastPUDecision::getCurrPartIdx() == 0){
+        rcMv.set(TEncFastPUDecision::getBestMv(0).getHor(),TEncFastPUDecision::getBestMv(0).getVer());
+        ruiSAD = TEncFastPUDecision::getPrefDist(1);
+      }
+  }
+ else if(TEncFastPUDecision::getCurrPartSize() == SIZE_2NxN && TEncFastPUDecision::isBorderC()){
+      if(TEncFastPUDecision::getCurrPartIdx() == 1){
+        rcMv.set(TEncFastPUDecision::getBestMv(1).getHor(),TEncFastPUDecision::getBestMv(1).getVer());
+        ruiSAD = TEncFastPUDecision::getPrefDist(2);
+      }
+  }
+  else if(TEncFastPUDecision::getCurrPartSize() == SIZE_Nx2N && TEncFastPUDecision::isBorderD()){
+      if(TEncFastPUDecision::getCurrPartIdx() == 1){
+        rcMv.set(TEncFastPUDecision::getBestMv(2).getHor(),TEncFastPUDecision::getBestMv(2).getVer());
+        ruiSAD = TEncFastPUDecision::getPrefDist(3);
+      }
+  }
+  else{
+      rcMv.set( iBestX, iBestY );
+      ruiSAD = uiSadBest - m_pcRdCost->getCost( iBestX, iBestY );
+  }
+
   return;
 }
 
