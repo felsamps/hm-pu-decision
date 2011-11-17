@@ -37,7 +37,10 @@ std::string TEncFastPUDecision::report() {
 	
 	
 	for(int i=0; i<4; i++) {
-		sprintf(str, "MV %d - (%d %d) - %d - %d\n ", i, bestMv[i].getHor(), bestMv[i].getVer(), bestDist[i], prefDist[i]);
+		sprintf(str, "MV %d - (%d %d) - %d - %d ", i, bestMv[i].getHor(), bestMv[i].getVer(), bestDist[i], prefDist[i]);
+                if(prefDist[i] < bestDist[i])
+                    strcat(str,"**");
+                strcat(str, "\n");
 		std::string cppStr(str);
 		returnable += cppStr;
 	}

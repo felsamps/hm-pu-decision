@@ -2551,7 +2551,7 @@ Void TEncSearch::predInterSearch( TComDataCU* pcCU, TComYuv* pcOrgYuv, TComYuv*&
             else
             {
 			  TEncFastPUDecision::setCU(pcCU);
-              TEncFastPUDecision::setCurrPartIdx(iPartIdx);
+                          TEncFastPUDecision::setCurrPartIdx(iPartIdx);
 			  TEncFastPUDecision::setRefIdx(iRefIdxTemp);
 			  //DBG_START
 			  TComDbg::print("\nCU (%d,%d) - Ref: %d Idx: %d PU:%d D:%d Size:%d\n", pcCU->getCUPelX(), pcCU->getCUPelY(), TEncFastPUDecision::getRefIdx(), iPartIdx, ePartSize, pcCU->getDepth(0), pcCU->getWidth(0));
@@ -3427,6 +3427,7 @@ Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRe
       piRefSrch = piRefY + x;
       m_cDistParam.pCur = piRefSrch;
       uiSad = m_cDistParam.DistFunc( &m_cDistParam );
+      uiSad += m_pcRdCost->getCost( x, y );
 
 	  /* PU DECISION - CALCULATING PREF VECTORS DISTORTIONS */
 	  UInt currPart = TEncFastPUDecision::getCurrPartIdx();
@@ -3449,7 +3450,6 @@ Void TEncSearch::xPatternSearch( TComPattern* pcPatternKey, Pel* piRefY, Int iRe
 	  }
 	        
       // motion cost
-      uiSad += m_pcRdCost->getCost( x, y );
       
       if ( uiSad < uiSadBest )
       {
