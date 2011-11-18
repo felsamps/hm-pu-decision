@@ -2983,9 +2983,12 @@ Void TEncSearch::xMotionEstimation(TComDataCU* pcCU, TComYuv* pcYuvOrg, Int iPar
     }
 
     fpuMv.set(rcMv.getHor(), rcMv.getVer());
-    TEncFastPUDecision::setBestMv(fpuMv);
-    TEncFastPUDecision::setBestDist(ruiCost);
-    TComDbg::print("(FS) MV (%d,%d) - SAD %u\n", fpuMv.getHor(), fpuMv.getVer(), ruiCost);
+
+    if(TEncFastPUDecision::getCurrPartSize() == SIZE_NxN){
+        TEncFastPUDecision::setBestMv(fpuMv);
+        TEncFastPUDecision::setBestDist(ruiCost);
+        TComDbg::print("(FS) MV (%d,%d) - SAD %u\n", fpuMv.getHor(), fpuMv.getVer(), ruiCost);
+    }
     m_pcRdCost->setCostScale(0);
     rcMv <<= 2;
     rcMv += (cMvHalf <<= 1);
@@ -3038,6 +3041,9 @@ Void TEncSearch::xPatternSearch(TComPattern* pcPatternKey, Pel* piRefY, Int iRef
     Int iBestY = 0;
 
     Pel* piRefSrch;
+    PartSize partSize = TEncFastPUDecision::getCurrPartSize();
+    UInt currPart = TEncFastPUDecision::getCurrPartIdx();
+
 
     //-- jclee for using the SAD function pointer
     m_pcRdCost->setDistParam(pcPatternKey, piRefY, iRefStride, m_cDistParam);
@@ -3049,18 +3055,17 @@ Void TEncSearch::xPatternSearch(TComPattern* pcPatternKey, Pel* piRefY, Int iRef
         }
     }
 
-    piRefY += (iSrchRngVerTop * iRefStride);
-    for (Int y = iSrchRngVerTop; y <= iSrchRngVerBottom; y++) {
-        for (Int x = iSrchRngHorLeft; x <= iSrchRngHorRight; x++) {
-            //  find min. distortion position
-            piRefSrch = piRefY + x;
-            m_cDistParam.pCur = piRefSrch;
-            uiSad = m_cDistParam.DistFunc(&m_cDistParam);
-            uiSad += m_pcRdCost->getCost(x, y);
+    if (partSize == SIZE_NxN) {
+        piRefY += (iSrchRngVerTop * iRefStride);
+        for (Int y = iSrchRngVerTop; y <= iSrchRngVerBottom; y++) {
+            for (Int x = iSrchRngHorLeft; x <= iSrchRngHorRight; x++) {
+                //  find min. distortion position
+                piRefSrch = piRefY + x;
+                m_cDistParam.pCur = piRefSrch;
+                uiSad = m_cDistParam.DistFunc(&m_cDistParam);
+                uiSad += m_pcRdCost->getCost(x, y);
 
-            /* PU DECISION - CALCULATING PREF VECTORS DISTORTIONS */
-            UInt currPart = TEncFastPUDecision::getCurrPartIdx();
-            if (TEncFastPUDecision::getCurrPartSize() == SIZE_NxN) {
+                /* PU DECISION - CALCULATING PREF VECTORS DISTORTIONS */
                 switch (currPart) {
                     case 1:
                         if (y == TEncFastPUDecision::bestMv[0].getVer() && x == TEncFastPUDecision::bestMv[0].getHor()) {
@@ -3079,47 +3084,47 @@ Void TEncSearch::xPatternSearch(TComPattern* pcPatternKey, Pel* piRefY, Int iRef
                         }
                 }
 
-            }
-            // motion cost
+                // motion cost
 
-            if (uiSad < uiSadBest) {
-                uiSadBest = uiSad;
-                iBestX = x;
-                iBestY = y;
+                if (uiSad < uiSadBest) {
+                    uiSadBest = uiSad;
+                    iBestX = x;
+                    iBestY = y;
+                }
             }
+            piRefY += iRefStride;
         }
-        piRefY += iRefStride;
     }
- 
-    if (TEncFastPUDecision::getCurrPartSize() == SIZE_2NxN && TEncFastPUDecision::isBorderA()) {
-        if (TEncFastPUDecision::getCurrPartIdx() == 0) {
-            rcMv.set(TEncFastPUDecision::getBestMv(0).getHor(), TEncFastPUDecision::getBestMv(0).getVer());
-            ruiSAD = TEncFastPUDecision::getPrefDist(0);
-            return;
-        }
-    } else if (TEncFastPUDecision::getCurrPartSize() == SIZE_Nx2N && TEncFastPUDecision::isBorderB()) {
-        if (TEncFastPUDecision::getCurrPartIdx() == 0 && !TEncFastPUDecision::isBorderA()) {
-            rcMv.set(TEncFastPUDecision::getBestMv(0).getHor(), TEncFastPUDecision::getBestMv(0).getVer());
-            ruiSAD = TEncFastPUDecision::getPrefDist(1);
-            return;
-        }
-    } else if (TEncFastPUDecision::getCurrPartSize() == SIZE_2NxN && TEncFastPUDecision::isBorderC()) {
-        if (TEncFastPUDecision::getCurrPartIdx() == 1 && !TEncFastPUDecision::isBorderB()) {
-            rcMv.set(TEncFastPUDecision::getBestMv(1).getHor(), TEncFastPUDecision::getBestMv(1).getVer());
-            ruiSAD = TEncFastPUDecision::getPrefDist(2);
-            return;
-        }
-    } else if (TEncFastPUDecision::getCurrPartSize() == SIZE_Nx2N && TEncFastPUDecision::isBorderD()) {
-        if (TEncFastPUDecision::getCurrPartIdx() == 1 && !TEncFastPUDecision::isBorderB() && !TEncFastPUDecision::isBorderC()) {
-            rcMv.set(TEncFastPUDecision::getBestMv(2).getHor(), TEncFastPUDecision::getBestMv(2).getVer());
-            ruiSAD = TEncFastPUDecision::getPrefDist(3);
-            return;
+    else{
+        //FAST DECISION
+
+        bool mergeA = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderA() && (currPart == 0);
+        bool mergeB = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderB() && (currPart == 0);
+        bool mergeC = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderC() && (currPart == 1);
+        bool mergeD = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderD() && (currPart == 1);
+
+        if (mergeA){
+            iBestX = TEncFastPUDecision::getBestMv(0).getHor();
+            iBestY = TEncFastPUDecision::getBestMv(0).getVer();
+            uiSadBest = TEncFastPUDecision::getPrefDist(0);
+        } else if (mergeB && !mergeA && !mergeC){
+            iBestX = TEncFastPUDecision::getBestMv(0).getHor();
+            iBestY = TEncFastPUDecision::getBestMv(0).getVer();
+            uiSadBest = TEncFastPUDecision::getPrefDist(0);
+        } else if (mergeC) {
+            iBestX = TEncFastPUDecision::getBestMv(2).getHor();
+            iBestY = TEncFastPUDecision::getBestMv(2).getVer();
+            uiSadBest = TEncFastPUDecision::getPrefDist(0);
+        } else if (mergeD && !mergeB && !mergeC) {
+            iBestX = TEncFastPUDecision::getBestMv(1).getHor();
+            iBestY = TEncFastPUDecision::getBestMv(1).getVer();
+            uiSadBest = TEncFastPUDecision::getPrefDist(0);
         }
     }
 
     rcMv.set(iBestX, iBestY);
     ruiSAD = uiSadBest - m_pcRdCost->getCost(iBestX, iBestY);
-
+    
     return;
 }
 
