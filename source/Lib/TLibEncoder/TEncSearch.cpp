@@ -3054,8 +3054,12 @@ Void TEncSearch::xPatternSearch(TComPattern* pcPatternKey, Pel* piRefY, Int iRef
             m_cDistParam.iSubShift = 1;
         }
     }
+    bool mergeA = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderA() && (currPart == 0);
+    bool mergeB = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderB() && (currPart == 0);
+    bool mergeC = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderC() && (currPart == 1);
+    bool mergeD = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderD() && (currPart == 1);
 
-    if (partSize == SIZE_NxN) {
+    if (mergeA || mergeB || mergeC || mergeD) {
         piRefY += (iSrchRngVerTop * iRefStride);
         for (Int y = iSrchRngVerTop; y <= iSrchRngVerBottom; y++) {
             for (Int x = iSrchRngHorLeft; x <= iSrchRngHorRight; x++) {
@@ -3098,27 +3102,22 @@ Void TEncSearch::xPatternSearch(TComPattern* pcPatternKey, Pel* piRefY, Int iRef
     else{
         //FAST DECISION
 
-        bool mergeA = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderA() && (currPart == 0);
-        bool mergeB = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderB() && (currPart == 0);
-        bool mergeC = (partSize == SIZE_2NxN) && TEncFastPUDecision::isBorderC() && (currPart == 1);
-        bool mergeD = (partSize == SIZE_Nx2N) && TEncFastPUDecision::isBorderD() && (currPart == 1);
-
-        if (mergeA){
+        if (mergeA && !mergeB && !mergeD){
             iBestX = TEncFastPUDecision::getBestMv(0).getHor();
             iBestY = TEncFastPUDecision::getBestMv(0).getVer();
             uiSadBest = TEncFastPUDecision::getPrefDist(0);
-        } else if (mergeB && !mergeA && !mergeC){
+        } else if (mergeB){
             iBestX = TEncFastPUDecision::getBestMv(0).getHor();
             iBestY = TEncFastPUDecision::getBestMv(0).getVer();
-            uiSadBest = TEncFastPUDecision::getPrefDist(0);
-        } else if (mergeC) {
+            uiSadBest = TEncFastPUDecision::getPrefDist(1);
+        } else if (mergeC && !mergeB && !mergeD) {
             iBestX = TEncFastPUDecision::getBestMv(2).getHor();
             iBestY = TEncFastPUDecision::getBestMv(2).getVer();
-            uiSadBest = TEncFastPUDecision::getPrefDist(0);
-        } else if (mergeD && !mergeB && !mergeC) {
+            uiSadBest = TEncFastPUDecision::getPrefDist(2);
+        } else if (mergeD) {
             iBestX = TEncFastPUDecision::getBestMv(1).getHor();
             iBestY = TEncFastPUDecision::getBestMv(1).getVer();
-            uiSadBest = TEncFastPUDecision::getPrefDist(0);
+            uiSadBest = TEncFastPUDecision::getPrefDist(3);
         }
     }
 

@@ -27,6 +27,12 @@ void TEncFastPUDecision::init() {
     borderB = false;
     borderC = false;
     borderD = false;
+    for(int i = 0; i < 4; i++){
+        bestMv[i] = TComMv(0,0);
+        prefMv[i] = TComMv(0,0);
+        bestDist[i] = MAX_UINT;
+        prefDist[i] = MAX_UINT;
+    }
     currPartIdx = 0;
     cu = NULL;
 }
