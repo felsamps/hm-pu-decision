@@ -40,6 +40,7 @@
 #include "TEncCu.h"
 #include "TEncAnalyze.h"
 #include "../TLibCommon/TComDbg.h"
+#include "TEncDefines.h"
 
 // ====================================================================================================================
 // Constructor / destructor / create / destroy
@@ -446,7 +447,9 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 
 				if (pcPic->getSlice(0)->getSPS()->getUseMRG()) {
 #if !HHI_MRG_SKIP
+#if SKIP_PREDICTION
 					xCheckRDCostAMVPSkip(rpcBestCU, rpcTempCU);
+#endif
 #if SUB_LCU_DQP
 					rpcTempCU->initEstData(uiDepth, iQP);
 #else
@@ -483,8 +486,10 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 				
 				// 2Nx2N, NxN
 				if (!bEarlySkip) {
-					//xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_2Nx2N );
-					//rpcTempCU->initEstData( uiDepth, iQP );
+#if !FAST_PU_DECISION
+					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
+					rpcTempCU->initEstData(uiDepth, iQP);
+#endif
 				}
 			}
 
@@ -507,37 +512,51 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 				if (!bEarlySkip) {
 
 #if !SUB_LCU_DQP
+					#if !FAST_PU_DECISION
 					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
 					rpcTempCU->initEstData();
+					#endif
 #endif
-					//if (uiDepth == g_uiMaxCUDepth - g_uiAddCUDepth) {
-						//FAST DECISION
-						TEncFastPUDecision::init();
+					#if !FAST_PU_DECISION
+					if (uiDepth == g_uiMaxCUDepth - g_uiAddCUDepth) {
 						xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_NxN);
-						TEncFastPUDecision::decideMVSimilarity();
-						TComDbg::print("%s",TEncFastPUDecision::report().c_str());
+
 #if SUB_LCU_DQP
 						rpcTempCU->initEstData(uiDepth, iQP);
 #else
 						rpcTempCU->initEstData();
 #endif
-					//}
+					}
+					#else // if FAST_PU_DECISION
+					TEncFastPUDecision::init();
+					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_NxN);
+					TEncFastPUDecision::decideMVSimilarity();
+					TComDbg::print("%d %d %d %s", rpcBestCU->getCUPelX(), rpcBestCU->getCUPelY(), rpcBestCU->getWidth(0),  TEncFastPUDecision::report().c_str());
+#if SUB_LCU_DQP
+						rpcTempCU->initEstData(uiDepth, iQP);
+#else
+						rpcTempCU->initEstData();
+#endif
+			 		#endif // !FAST_PU_DECISION
 				}
-
+				#if !FAST_PU_DECISION
 				{ // 2NxN, Nx2N
-					//xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
+
+					
+					xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
 #if SUB_LCU_DQP
-					//rpcTempCU->initEstData( uiDepth, iQP );
+					rpcTempCU->initEstData( uiDepth, iQP );
 #else
 					rpcTempCU->initEstData();
 #endif
-					//xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
+					xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
 #if SUB_LCU_DQP
-					//rpcTempCU->initEstData( uiDepth, iQP );
+					rpcTempCU->initEstData( uiDepth, iQP );
 #else
 					rpcTempCU->initEstData();
 #endif
 				}
+				#endif
 
 			}
 
@@ -546,8 +565,11 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 			rpcTempCU->setIPCMFlag(0, false);
 			rpcTempCU->setIPCMFlagSubParts(false, 0, uiDepth); //SUB_LCU_DQP
 #endif
-
-
+			/*
+			if(rpcBestCU->getSlice()->getSliceType() != I_SLICE )
+				TComDbg::print("%d %d %d %d\n", rpcBestCU->getCUPelX(), rpcBestCU->getCUPelY(), rpcBestCU->getWidth(0), rpcBestCU->getPartitionSize(0));
+			*/
+			
 			// do normal intra modes
 			if (!bEarlySkip) {
 				// speedup for inter frames
