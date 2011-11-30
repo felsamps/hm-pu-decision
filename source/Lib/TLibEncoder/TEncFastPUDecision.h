@@ -25,6 +25,9 @@ public:
     /* Fast PU Decision Methods */
     static void init();
     static void decideMVSimilarity();
+    static PartSize approach01();
+    static PartSize approach02();
+
     static void xSetCUParameters();
     static std::string report();
         

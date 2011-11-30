@@ -518,7 +518,7 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			
 
 			/* Printing some CU Parameters */
-			TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
+			/*TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
                         char predictions[][7] = {"SKIP","INTER","INTRA"};
                         char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
 			for(UInt i=0; i < pcCU->getTotalNumPart();) {
@@ -527,7 +527,7 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 							}
                             i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
                             
-			}
+			}*/
 
 			pppcRDSbacCoder->setBinCountingEnableFlag(false);
 #if FINE_GRANULARITY_SLICES
@@ -568,14 +568,12 @@ Void TEncSlice::compressSlice(TComPic*& rpcPic) {
 			m_pcCavlcCoder ->setAdaptFlag(true);
 			m_pcCuEncoder->encodeCU(pcCU);
                         
-                        TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
-                        char predictions[][7] = {"SKIP","INTER","INTRA"};
-                        char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
+            TComDbg::printDbg("TEncSlice", "CU: (%d,%d) - %d" , pcCU->getCUPelX(), pcCU->getCUPelY(), pcCU->getTotalNumPart());
+            char predictions[][7] = {"SKIP","INTER","INTRA"};
+            char partitions[][7] = {"2Nx2N","2NxN","Nx2N","NxN"};
 			for(UInt i=0; i < pcCU->getTotalNumPart();) {
-                           // if(pcCU->getPredictionMode(i) != MODE_INTRA){
-				TComDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
-                                i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
-                            //}
+                TComDbg::printDbg("", "%s %s %d %d", predictions[pcCU->getPredictionMode(i)], partitions[pcCU->getPartitionSize(i)], pcCU->getWidth(i), pcCU->getHeight(i));
+                i += pcCU->getWidth(i)*pcCU->getHeight(i)/16;
 			}
 
 #if FINE_GRANULARITY_SLICES
