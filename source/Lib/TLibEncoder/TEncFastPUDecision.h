@@ -2,56 +2,72 @@
 #define	_TENCFASTPUDECISION_H
 
 #include <vector>
+#include <string>
 #include "../TLibCommon/TComMv.h"
 #include "../TLibCommon/TComDataCU.h"
 
 class TEncFastPUDecision {
-    std::vector<TComMv*> bestMv, prefMv;
-    std::vector<UInt> bestDist, prefDist;
-    Bool borderA, borderB, borderC, borderD;
-    PartSize partSize;
-    static const PredMode predMode = MODE_INTER;
-    TComDataCU *cu;
-    std::vector<UInt**> distMap; 
 
 public:
+    static TComMv bestMv[4], prefMv[4]; //Se vamos usar vector, temos que resolver BAD_ACCESS da indexacao direta
+    static UInt bestDist[4], prefDist[4];
+    static Bool borderA, borderB, borderC, borderD;
+    static PartSize partSize;
+    static UInt currPartIdx;
+    static Int refFrameIdx;
+    static const PredMode predMode = MODE_INTER;
+    static TComDataCU *cu;
+    static std::vector<UInt**> distMap;
+
+
     TEncFastPUDecision();
     
     /* Fast PU Decision Methods */
-    void decide();
-    void xSetCUParameters();
+    static void init();
+    static void decideMVSimilarity();
+    static PartSize approach01();
+    static PartSize approach02();
+
+    static void xSetCUParameters();
+    static std::string report();
         
 
-    void        setCU               (TComDataCU *pCu)           { this->cu = pCu; }
-    TComDataCU* getCU               ()                          { return this->cu; }
+    static void        setCU               (TComDataCU *pCu)           { cu = pCu; }
+    static TComDataCU* getCU               ()                          { return cu; }
+
+    static void        setCurrPartIdx      (UInt idx)                  { currPartIdx = idx; }
+    static UInt        getCurrPartIdx      ()                          { return currPartIdx; }
+
 
     /* Best Matches' Information Setters and Getters */
-    void        setBestMv           (UInt block, TComMv* mv)    { this->bestMv[block] = mv; }
-    TComMv*     getBestMv           (UInt block)                { return this->bestMv[block]; }
+    static void        setBestMv           (UInt block, TComMv mv)    { bestMv[block] = mv; }
+    static void        setBestMv           (TComMv mv)                 { bestMv[currPartIdx] = mv; }
+    static TComMv      getBestMv           (UInt block)                { return bestMv[block]; }
 
-    void        setBestDist         (UInt block, UInt dist)     { this->bestDist[block] = dist; }
-    UInt        getBestDist         (UInt block)                { return this->bestDist[block]; }
+    static void        setBestDist         (UInt block, UInt dist)     { bestDist[block] = dist; }
+    static void        setBestDist         (UInt dist)                 { bestDist[currPartIdx] = dist; }
+    static UInt        getBestDist         (UInt block)                { return bestDist[block]; }
 
     /* Prefferred Matches' Information Setters and Getters */
-    void        setPrefMv           (UInt block, TComMv *mv)    { this->prefMv[block] = mv; }
-    TComMv*     getPrefMv           (UInt block)                { return this->prefMv[block]; }
+    static void        setPrefMv           (UInt block, TComMv mv)     { prefMv[block] = mv; }
+    static TComMv      getPrefMv           (UInt block)                { return prefMv[block]; }
 
-    void        setPrefDist         (UInt block, UInt dist)     { this->prefDist[block] = dist; }
-    UInt        getPrefDist         (UInt block)                { return this->prefDist[block]; }
+    static void        setPrefDist         (UInt block, UInt dist)     { prefDist[block] = dist; }
+    static UInt        getPrefDist         (UInt block)                { return prefDist[block]; }
 
     /* Border flags setters and getters */
-    void        setBorderA          (Bool b)                    { this->borderA = b; }
-    void        setBorderB          (Bool b)                    { this->borderB = b; }
-    void        setBorderC          (Bool b)                    { this->borderC = b; }
-    void        setBorderD          (Bool b)                    { this->borderD = b; }
+    static void        setBorderA          (Bool b)                    { borderA = b; }
+    static void        setBorderB          (Bool b)                    { borderB = b; }
+    static void        setBorderC          (Bool b)                    { borderC = b; }
+    static void        setBorderD          (Bool b)                    { borderD = b; }
 
-    Bool        isBorderA           ()                          { return borderA; }
-    Bool        isBorderB           ()                          { return borderB; }
-    Bool        isBorderC           ()                          { return borderC; }
-    Bool        isBorderD           ()                          { return borderD; }
+    static Bool        isBorderA           ()                          { return borderA; }
+    static Bool        isBorderB           ()                          { return borderB; }
+    static Bool        isBorderC           ()                          { return borderC; }
+    static Bool        isBorderD           ()                          { return borderD; }
 
-private:
-
+    static void        setRefIdx           (Int refIdx)                { refFrameIdx = refIdx; }
+    static Int         getRefIdx           ()                          { return refFrameIdx; }
 };
 
 #endif	/* _TENCFASTPUDECISION_H */

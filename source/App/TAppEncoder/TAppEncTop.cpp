@@ -217,9 +217,9 @@ Void TAppEncTop::xInitLib() {
 Void TAppEncTop::encode() {
 
 	/* Init Debug Configurations */
-	TComDbg::openDbgFile(m_pchDebugFile);
-	TComDbg::printDbg("TAppEncTop", "## DEBUG FILE FOR THE PU HEURISTIC DECISION FOR THE HEVC ##");
 
+	TAppDbg::openDbgFile(m_pchDebugFile);
+	TComDbg::setDbgFile(TAppDbg::getDbgFile());
 	
 	fstream bitstreamFile(m_pchBitstreamFile, fstream::binary | fstream::out);
 	if (!bitstreamFile) {

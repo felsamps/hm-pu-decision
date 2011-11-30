@@ -48,6 +48,7 @@
 #include "../TLibCommon/TComPic.h"
 #include "TEncEntropy.h"
 #include "TEncSbac.h"
+#include "TEncFastPUDecision.h"
 #include "TEncCfg.h"
 
 class TEncCu;
@@ -342,7 +343,7 @@ protected:
                                     TComMv&       rcMv,
                                     UInt&         ruiBits,
                                     UInt&         ruiCost,
-                                    Bool          bBi = false  );
+                                    Bool          bBi = false);
   
   Void xTZSearch                  ( TComDataCU*   pcCU,
                                     TComPattern*  pcPatternKey,
@@ -366,15 +367,24 @@ protected:
                                     TComMv*       pcMvSrchRngLT,
                                     TComMv*       pcMvSrchRngRB,
                                     TComMv&       rcMv,
-                                    UInt&         ruiSAD );
-  
-  Void xPatternSearch             ( TComPattern*  pcPatternKey,
+                                    UInt&         ruiSAD);
+
+  Void xPUDecisionSearch          ( TComDataCU*   pcCU,
+                                    TComPattern*  pcPatternKey,
                                     Pel*          piRefY,
                                     Int           iRefStride,
                                     TComMv*       pcMvSrchRngLT,
                                     TComMv*       pcMvSrchRngRB,
                                     TComMv&       rcMv,
                                     UInt&         ruiSAD );
+
+  Void xPatternSearch             ( TComPattern*  pcPatternKey,
+                                    Pel*          piRefY,
+                                    Int           iRefStride,
+                                    TComMv*       pcMvSrchRngLT,
+                                    TComMv*       pcMvSrchRngRB,
+                                    TComMv&       rcMv,
+                                    UInt&         ruiSAD);
   
   Void xPatternSearchFracDIF      ( TComDataCU*   pcCU,
                                     TComPattern*  pcPatternKey,
