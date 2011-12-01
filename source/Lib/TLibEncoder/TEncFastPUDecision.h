@@ -18,6 +18,7 @@ public:
     static const PredMode predMode = MODE_INTER;
     static TComDataCU *cu;
     static std::vector<UInt**> distMap;
+    static bool fastMode;
 
 
     TEncFastPUDecision();

@@ -21,6 +21,7 @@ const PredMode TEncFastPUDecision::predMode;
 TComDataCU* TEncFastPUDecision::cu;
 std::vector<UInt**> TEncFastPUDecision::distMap;
 Int TEncFastPUDecision::refFrameIdx;
+Bool TEncFastPUDecision::fastMode;
 
 void TEncFastPUDecision::init() {
     borderA = false;
@@ -30,6 +31,7 @@ void TEncFastPUDecision::init() {
     currPartIdx = 0;
     cu = NULL;
 	partSize = SIZE_NONE;
+	fastMode = true;
 }
 
 std::string TEncFastPUDecision::report() {

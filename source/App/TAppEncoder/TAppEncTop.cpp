@@ -218,8 +218,7 @@ Void TAppEncTop::encode() {
 
 	/* Init Debug Configurations */
 
-	TAppDbg::openDbgFile(m_pchDebugFile);
-	TComDbg::setDbgFile(TAppDbg::getDbgFile());
+	TComDbg::openDbgFile(m_pchDebugFile);
 	
 	fstream bitstreamFile(m_pchBitstreamFile, fstream::binary | fstream::out);
 	if (!bitstreamFile) {
