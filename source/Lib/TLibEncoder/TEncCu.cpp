@@ -40,6 +40,7 @@
 #include "TEncCu.h"
 #include "TEncAnalyze.h"
 #include "../TLibCommon/TComDbg.h"
+#include "TEncDefines.h"
 
 // ====================================================================================================================
 // Constructor / destructor / create / destroy
@@ -446,7 +447,9 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 
 				if (pcPic->getSlice(0)->getSPS()->getUseMRG()) {
 #if !HHI_MRG_SKIP
+#if SKIP_PREDICTION
 					xCheckRDCostAMVPSkip(rpcBestCU, rpcTempCU);
+#endif
 #if SUB_LCU_DQP
 					rpcTempCU->initEstData(uiDepth, iQP);
 #else
@@ -483,8 +486,10 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 				
 				// 2Nx2N, NxN
 				if (!bEarlySkip) {
-					//xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_2Nx2N );
-					//rpcTempCU->initEstData( uiDepth, iQP );
+#if !FAST_PU_DECISION
+					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
+					rpcTempCU->initEstData(uiDepth, iQP);
+#endif
 				}
 			}
 
@@ -507,37 +512,59 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 				if (!bEarlySkip) {
 
 #if !SUB_LCU_DQP
+					#if !FAST_PU_DECISION
 					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
 					rpcTempCU->initEstData();
+					#endif
 #endif
-					//if (uiDepth == g_uiMaxCUDepth - g_uiAddCUDepth) {
-						//FAST DECISION
-						TEncFastPUDecision::init();
+					#if !FAST_PU_DECISION
+					if (uiDepth == g_uiMaxCUDepth - g_uiAddCUDepth) {
 						xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_NxN);
-						TEncFastPUDecision::decideMVSimilarity();
-						TComDbg::print("%s",TEncFastPUDecision::report().c_str());
+
 #if SUB_LCU_DQP
 						rpcTempCU->initEstData(uiDepth, iQP);
 #else
 						rpcTempCU->initEstData();
 #endif
-					//}
-				}
+					}
+					#else // if FAST_PU_DECISION
+					TEncFastPUDecision::init();
+					xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_NxN);
+					TEncFastPUDecision::decideMVSimilarity();
+					TComDbg::print("%d %d %d %s", rpcBestCU->getCUPelX(), rpcBestCU->getCUPelY(), rpcBestCU->getWidth(0),  TEncFastPUDecision::report().c_str());
+#if SUB_LCU_DQP
+                                        rpcTempCU->initEstData(uiDepth, iQP);
 
+                                        if(TEncFastPUDecision::getPartSize() == SIZE_2Nx2N){
+                                            xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
+                                            rpcTempCU->initEstData(uiDepth, iQP);
+                                        }
+#else
+                                        rpcTempCU->initEstData();
+#endif
+			 		#endif // !FAST_PU_DECISION
+				}
+				//#if !FAST_PU_DECISION
 				{ // 2NxN, Nx2N
+
+                                    if(TEncFastPUDecision::getPartSize() == SIZE_Nx2N){
 					xCheckRDCostInter( rpcBestCU, rpcTempCU, SIZE_Nx2N  );
 #if SUB_LCU_DQP
 					rpcTempCU->initEstData( uiDepth, iQP );
+                                    }
 #else
 					rpcTempCU->initEstData();
 #endif
+                                    if(TEncFastPUDecision::getPartSize() == SIZE_2NxN){
 					xCheckRDCostInter      ( rpcBestCU, rpcTempCU, SIZE_2NxN  );
 #if SUB_LCU_DQP
 					rpcTempCU->initEstData( uiDepth, iQP );
+                                    }
 #else
 					rpcTempCU->initEstData();
 #endif
 				}
+				//#endif
 
 			}
 
@@ -546,8 +573,11 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 			rpcTempCU->setIPCMFlag(0, false);
 			rpcTempCU->setIPCMFlagSubParts(false, 0, uiDepth); //SUB_LCU_DQP
 #endif
-
-
+			/*
+			if(rpcBestCU->getSlice()->getSliceType() != I_SLICE )
+				TComDbg::print("%d %d %d %d\n", rpcBestCU->getCUPelX(), rpcBestCU->getCUPelY(), rpcBestCU->getWidth(0), rpcBestCU->getPartitionSize(0));
+			*/
+			
 			// do normal intra modes
 			if (!bEarlySkip) {
 				// speedup for inter frames
@@ -556,7 +586,7 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 						rpcBestCU->getCbf(0, TEXT_CHROMA_U) != 0 ||
 						rpcBestCU->getCbf(0, TEXT_CHROMA_V) != 0) // avoid very complex intra if it is unlikely
 				{
-					// MATEUS : Comment this line to enable Intra mode in Inter Slices
+					// MATEUS : Uncomment this line to disable Intra mode in Inter Slices
 					if (rpcBestCU->getSlice()->getSliceType() == I_SLICE) {
 						xCheckRDCostIntra(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
 #if SUB_LCU_DQP
@@ -1184,9 +1214,8 @@ Void TEncCu::xCheckRDCostMerge2Nx2N(TComDataCU*& rpcBestCU, TComDataCU*& rpcTemp
 Void TEncCu::xCheckRDCostInter(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, PartSize ePartSize) {
 	UChar uhDepth = rpcTempCU->getDepth(0);
 
-        //FAST DECISION
-        TEncFastPUDecision::setCurrPartSize(ePartSize);
 	rpcTempCU->setDepthSubParts(uhDepth, 0);
+
 	rpcTempCU->setPartSizeSubParts(ePartSize, 0, uhDepth);
 	rpcTempCU->setPredModeSubParts(MODE_INTER, 0, uhDepth);
 

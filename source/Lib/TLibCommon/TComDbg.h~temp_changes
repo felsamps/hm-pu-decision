@@ -1,12 +1,12 @@
 /* 
  * File:   TComDbg.h
- * Author: felsamps
+ * Author: grellert
  *
  * Created on August 24, 2011, 8:18 AM
  */
 
-#ifndef _TComDbg_H
-#define	_TComDbg_H
+#ifndef _TCOMDBG_H
+#define	_TCOMDBG_H
 
 #include <cstdio>
 #include <cstdarg>
@@ -25,7 +25,7 @@ public:
 
     /* Static Methods */
     static void openDbgFile(std::string fileName);
-    static FILE* getDbgFile();
+    static void setDbgFile(FILE *filePointer);
     static void closeDbgFile();
     static void printDbg(std::string className, const char* str, ...);
     static void print(const char* str, ...);
@@ -35,5 +35,6 @@ private:
 
 };
 
-#endif	/* _TComDbg_H */
+#endif	/* _TCOMDBG_H */
+
 

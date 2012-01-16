@@ -25,6 +25,9 @@ public:
     /* Fast PU Decision Methods */
     static void init();
     static void decideMVSimilarity();
+    static PartSize approach01();
+    static PartSize approach02();
+
     static void xSetCUParameters();
     static std::string report();
         
@@ -35,8 +38,6 @@ public:
     static void        setCurrPartIdx      (UInt idx)                  { currPartIdx = idx; }
     static UInt        getCurrPartIdx      ()                          { return currPartIdx; }
 
-    static void        setCurrPartSize      (PartSize ePartSize)       { partSize = ePartSize; }
-    static PartSize    getCurrPartSize      ()                         { return partSize; }
 
     /* Best Matches' Information Setters and Getters */
     static void        setBestMv           (UInt block, TComMv mv)    { bestMv[block] = mv; }
@@ -53,6 +54,8 @@ public:
 
     static void        setPrefDist         (UInt block, UInt dist)     { prefDist[block] = dist; }
     static UInt        getPrefDist         (UInt block)                { return prefDist[block]; }
+
+    static PartSize    getPartSize         ()                          { return partSize; }
 
     /* Border flags setters and getters */
     static void        setBorderA          (Bool b)                    { borderA = b; }
