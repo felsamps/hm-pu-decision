@@ -29,7 +29,7 @@ void TEncFastPUDecision::init() {
     borderD = false;
     currPartIdx = 0;
     cu = NULL;
-	partSize = SIZE_NONE;
+	partSize = SIZE_NxN;
 }
 
 std::string TEncFastPUDecision::report() {

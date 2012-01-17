@@ -535,10 +535,10 @@ Void TEncCu::xCompressCU(TComDataCU*& rpcBestCU, TComDataCU*& rpcTempCU, UInt ui
 #if SUB_LCU_DQP
                                         rpcTempCU->initEstData(uiDepth, iQP);
 
-                                        if(TEncFastPUDecision::getPartSize() == SIZE_2Nx2N){
-                                            xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
-                                            rpcTempCU->initEstData(uiDepth, iQP);
-                                        }
+//                                        if(TEncFastPUDecision::getPartSize() == SIZE_2Nx2N){
+//                                            xCheckRDCostInter(rpcBestCU, rpcTempCU, SIZE_2Nx2N);
+//                                            rpcTempCU->initEstData(uiDepth, iQP);
+//                                        }
 #else
                                         rpcTempCU->initEstData();
 #endif
